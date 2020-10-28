@@ -1,0 +1,1 @@
+function toBinary(i){if(typeof i!='string')throw new Error("Invalid");n=[];i.split("").forEach(m=>{b=(m.charCodeAt()).toString(2);while(!(b.length==8)){b=0+b}n.push(b)});n=n.join(" ");return n};module.exports=toBinary;
