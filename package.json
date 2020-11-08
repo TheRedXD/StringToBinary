@@ -1,6 +1,6 @@
 {
   "name": "formatex",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Converts digit formats to other digit formats. Example: base64 to ternary.",
   "main": "index.js",
   "scripts": {
