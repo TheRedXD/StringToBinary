@@ -1,30 +1,80 @@
-/**
- * @param {*} i Converts an ASCII string to binary. Usage: `stringToBinary("Your String Here")`
- */
-function stringToBinary(i) {
-  if (typeof i != 'string') throw new Error("Invalid");
-  n = [];
-  i.split("").forEach(m => {
-    b = (m.charCodeAt()).toString(2);
-    while (!(b.length == 8)) {
-      b = 0 + b;
+var convertions = [{ //Made by http://github.com/BlueBurgersTDD
+    "aliases": ["binary", "bin", "b"],
+    "scripts": {
+      "translateTo": function (a) {
+        return a.split("").map(b => b.charCodeAt().toString(2)).map(b => {
+          while (b.length < 8) {
+            b = "0" + b
+          }
+          return b;
+        }).join(" ");
+      },
+      "translateFrom": function (a) {
+        return a.split(" ").map(b => String.fromCharCode(parseInt(b, 2))).join("");
+      }
     }
-    n.push(b); //I am in a node module yay
-  });
-  n = n.join(" ");
-  return n;
+  },
+  {
+    "aliases": ["hex", "x"],
+    "scripts": {
+      "translateTo": function (a) {
+        return a.split("").map(b => b.charCodeAt().toString(16).toUpperCase()).join(" ");
+      },
+      "translateFrom": function (a) {
+        return a.split(" ").map(b => String.fromCharCode(parseInt(b, 16))).join("");
+      }
+    }
+  },
+  {
+    "aliases": ["base64", "b64", "base 64"],
+    "scripts": {
+      "translateTo": function (a) {
+        return Buffer.from(a).toString("base64");
+      },
+      "translateFrom": function (a) {
+        return Buffer.from(a, "base64").toString("utf-8");
+      }
+    }
+  },
+  {
+    "aliases": ["ternary", "3", "t"],
+    "scripts": {
+      "translateTo": function(a) {
+        return a.split("").map(b => b.charCodeAt().toString(3)).map(b => {
+          while (b.length < 6) {
+            b = "0" + b
+          }
+          return b;
+        }).join(" ");
+      },
+      "translateFrom": function (a) {
+        return a.split(" ").map(b => String.fromCharCode(parseInt(b, 3))).join("");
+      }
+    }
+  }
+];
+
+function translateTo(format, text) {
+  format = convertions.find(a => a.aliases.some(b => b == format));
+  if (!format) throw new Error("Invalid format!");
+  return format.scripts.translateTo(text);
+}
+
+function translateFrom(format, text) {
+  format = convertions.find(a => a.aliases.some(b => b == format));
+  if (!format) throw new Error("Invalid format!");
+  return format.scripts.translateFrom(text);
+}
+
+function translate(format1, format2, text) {
+  format1 = convertions.find(a => a.aliases.some(b => b == format1));
+  format2 = convertions.find(a => a.aliases.some(b => b == format2));
+  if (!format1) throw new Error("Invalid format: " + format1);
+  if (!format2) throw new Error("Invalid format: " + format2);
+  return format2.scripts.translateTo(format1.scripts.translateFrom(text));
+}
+module.exports = {
+  translateTo,
+  translateFrom,
+  translate
 };
-/**
- * @param {*} i Converts an ASCII string to hex. Usage: `stringToHex("Your String Here")`
- */
-function stringToHex(i) {
-  if (typeof i != 'string') throw new Error("Invalid");
-  n = [];
-  i.split("").forEach(m => {
-    b = (m.charCodeAt()).toString(16);
-    n.push(b);
-  });
-  n = n.join(" ");
-  return n;
-};
-module.exports = { stringToBinary, stringToHex };
